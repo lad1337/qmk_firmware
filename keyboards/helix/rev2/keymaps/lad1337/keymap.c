@@ -28,7 +28,7 @@
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
-enum layer_number { _QWERTY = 0, _LOWER, _RAISE, _ADJUST };
+enum layer_number { _QWERTY = 0, _LOWER, _RAISE, _ADJUST, _MOVE };
 
 // clang-format off
 enum custom_keycodes { 
@@ -38,14 +38,18 @@ enum custom_keycodes {
     ADJUST, 
     BACKLIT, 
     EISU, 
-    KANA, 
-    RGBRST };
+    MOVE, 
+    RGBRST,
+    RGBLAYER,
+};
 
 enum macro_keycodes {
     KC_SAMPLEMACRO,
 };
 
 // Macros
+#define KC_MO(x) LALT(x)
+#define KC_PAPP LGUI(KC_TAB)
 #define M_SAMPLE M(KC_SAMPLEMACRO)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -60,7 +64,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
      * | Shift|   Z  |   X  |   C  |   V  |   B  |   [  |   ]  |   N  |   M  |   ,  |   .  |   /  |Enter |
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-     * |ctl   |adjust| Alt  | EISU  | CMD |Lower |Space |Space |Raise | KANA | Left | Down |  Up  |Right |
+     * |ctl   |adjust| Alt  | EISU  | CMD |Lower |Space |Space |Raise | MOVE | Left | Down |  Up  |Right |
      * `-------------------------------------------------------------------------------------------------'
      */
 
@@ -69,7 +73,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Z, KC_U, KC_I, KC_O, KC_P, KC_BSPC,
         KC_ESC, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_QUOT,
         KC_LSFT, KC_Y, KC_X, KC_C, KC_V, KC_B, KC_LBRC, KC_RBRC, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_ENT,
-        KC_LCTL, ADJUST, KC_LALT, EISU, KC_LGUI, LOWER, KC_SPC, KC_SPC, RAISE, KANA, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT),
+        KC_LCTL, ADJUST, KC_LALT, EISU, KC_LGUI, LOWER, KC_SPC, KC_SPC, RAISE, MOVE, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT),
 
     /* Lower
      * ,-----------------------------------------.             ,-----------------------------------------.
@@ -112,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
      * |      | Reset|RGBRST|      |      |      |             |      |      |      |      |      |  Del |
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-     * |      |      |      |Aud on|Audoff| Mac  |             | Win  |Qwerty|      |      |      |      |
+     * |      |      |      |Aud on|Audoff| Mac  |             | Win  |Qwerty|RGBLAY|      |      |      |
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
      * |      |      |      |      |      |      |      |      |      |      |RGB ON| HUE+ | SAT+ | VAL+ |
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
@@ -120,11 +124,33 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * `-------------------------------------------------------------------------------------------------'
      */
     [_ADJUST] = LAYOUT(
-      KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6, KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,
+      KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6,                  KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,
       _______, RESET, RGBRST, _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL,
-      _______, _______, _______, AU_ON, AU_OFF, AG_NORM, AG_SWAP, QWERTY, _______, _______, _______, _______,
+      _______, _______, _______, AU_ON, AU_OFF, AG_NORM, AG_SWAP, QWERTY, RGBLAYER, _______, _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI,
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD)};
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD),
+    /* MOVE
+     * ,-----------------------------------------.             ,-----------------------------------------.
+     * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             |P_APP |      |      |      |      |      |
+     * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+     * |      |      |      |      |      |      |             |T_LEFT|T_DOWN|T_UP  |T_RIGH|      |      |
+     * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+     * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+     * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+     * `-------------------------------------------------------------------------------------------------'
+     */
+    [_MOVE] = LAYOUT(
+      _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______,                   KC_TAB, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______,                   KC_MO(KC_H), KC_MO(KC_J), KC_MO(KC_K), KC_MO(KC_L), _______, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
+      )
+
+};
 
 // clang-format on
 
@@ -137,9 +163,12 @@ float tone_plover[][2]    = SONG(PLOVER_SOUND);
 float tone_plover_gb[][2] = SONG(PLOVER_GOODBYE_SOUND);
 float music_scale[][2]    = SONG(MUSIC_SCALE_SOUND);
 #endif
+#ifdef OLED_DRIVER_ENABLE
+uint16_t oled_timer;
+#endif
 
 // define variables for reactive RGB
-bool TOG_STATUS = false;
+bool RGB_LAYER_SWITCH = false;
 int  RGB_current_mode;
 
 void persistent_default_layer_set(uint16_t default_layer) {
@@ -147,80 +176,53 @@ void persistent_default_layer_set(uint16_t default_layer) {
     default_layer_set(default_layer);
 }
 
-// Setting ADJUST layer RGB back to default
-void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
-    if (IS_LAYER_ON(layer1) && IS_LAYER_ON(layer2)) {
-#ifdef RGBLIGHT_ENABLE
-        // rgblight_mode(RGB_current_mode);
-#endif
-        layer_on(layer3);
+void layer_rgb(uint8_t layer) {
+    if (!RGB_LAYER_SWITCH) return;
+    if (IS_LAYER_ON(layer)) {
+        rgblight_mode_noeeprom(23);
     } else {
-        layer_off(layer3);
+        rgblight_reload_from_eeprom();
     }
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+#ifdef OLED_DRIVER_ENABLE
+    oled_timer = timer_read();
+#endif
     switch (keycode) {
         case QWERTY:
             if (record->event.pressed) {
-#ifdef AUDIO_ENABLE
-                PLAY_SONG(tone_qwerty);
-#endif
                 persistent_default_layer_set(1UL << _QWERTY);
             }
             return false;
             break;
         case LOWER:
             if (record->event.pressed) {
-                // not sure how to have keyboard check mode and set it to a variable, so my work around
-                // uses another variable that would be set to true after the first time a reactive key is pressed.
-                if (TOG_STATUS) {  // TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-                } else {
-                    TOG_STATUS = !TOG_STATUS;
-#ifdef RGBLIGHT_ENABLE
-                    // rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
-#endif
-                }
                 layer_on(_LOWER);
-                update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+                layer_rgb(_LOWER);
             } else {
-#ifdef RGBLIGHT_ENABLE
-                // rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
-#endif
-                TOG_STATUS = false;
                 layer_off(_LOWER);
-                update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+                layer_rgb(_LOWER);
             }
             return false;
             break;
         case RAISE:
             if (record->event.pressed) {
-                // not sure how to have keyboard check mode and set it to a variable, so my work around
-                // uses another variable that would be set to true after the first time a reactive key is pressed.
-                if (TOG_STATUS) {  // TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-                } else {
-                    TOG_STATUS = !TOG_STATUS;
-#ifdef RGBLIGHT_ENABLE
-                    // rgblight_mode(RGBLIGHT_MODE_SNAKE);
-#endif
-                }
                 layer_on(_RAISE);
-                update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+                layer_rgb(_RAISE);
             } else {
-#ifdef RGBLIGHT_ENABLE
-                // rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
-#endif
                 layer_off(_RAISE);
-                TOG_STATUS = false;
-                update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+                layer_rgb(_RAISE);
             }
             return false;
             break;
         case ADJUST:
             if (record->event.pressed) {
                 layer_on(_ADJUST);
+                layer_rgb(_ADJUST);
             } else {
                 layer_off(_ADJUST);
+                layer_rgb(_ADJUST);
             }
             return false;
             break;
@@ -233,41 +235,107 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             break;
-        case EISU:
-            if (record->event.pressed) {
-                if (is_mac_mode()) {
-                    register_code(KC_LANG2);
-                } else {
-                    SEND_STRING(SS_LALT("`"));
-                }
-            } else {
-                unregister_code(KC_LANG2);
-            }
-            return false;
-            break;
         case RGBRST:
             if (record->event.pressed) {
                 eeconfig_update_rgblight_default();
+                rgblight_sethsv(255, 0, 3 * RGBLIGHT_VAL_STEP);
                 rgblight_enable();
                 RGB_current_mode = rgblight_get_mode();
             }
             break;
+        case MOVE:
+            if (record->event.pressed) {
+                layer_on(_MOVE);
+                layer_rgb(_MOVE);
+                SEND_STRING(SS_DOWN(X_RGUI));
+            } else {
+                layer_off(_MOVE);
+                layer_rgb(_MOVE);
+                SEND_STRING(SS_UP(X_RGUI));
+            }
+            return false;
+            break;
+        case RGBLAYER:
+            if (record->event.pressed) {
+                RGB_LAYER_SWITCH = !RGB_LAYER_SWITCH;
+            }
     }
     return true;
 }
 
-#ifdef SSD1306OLED
-#    include "ssd1306.h"
-#endif
-
+#ifdef OLED_DRIVER_ENABLE
 void keyboard_post_init_user(void) {
     wait_ms(1000);
-    // oled_init(OLED_ROTATION_90);
-    iota_gfx_init(!has_usb());  // turns on the display
+    if (is_keyboard_master())
+        oled_init(OLED_ROTATION_270);
+    else
+        oled_init(OLED_ROTATION_270);
 }
+void render_rgbled_status(void) {
+    char buf[30];
+    if (RGBLIGHT_MODES > 1 && rgblight_is_enabled()) {
+        snprintf(buf, sizeof(buf), "  %2d\nH %3dS %3dL %3d", rgblight_get_mode(), rgblight_get_hue() / RGBLIGHT_HUE_STEP, rgblight_get_sat() / RGBLIGHT_SAT_STEP, rgblight_get_val() / RGBLIGHT_VAL_STEP);
+    } else {
+        snprintf(buf, sizeof(buf), "                   ");
+    }
+    oled_write(buf, false);
+}
+static const char PROGMEM dot[]           = {0x07, 0};
+static const char PROGMEM arrow_right[]   = {0x10, 0};
+static const char PROGMEM arrow_left[]    = {0x11, 0};
+static const char PROGMEM arrow_up[]      = {0x1E, 0};
+static const char PROGMEM arrow_down[]    = {0x1F, 0};
+static const char PROGMEM arrow_up_down[] = {0x17, 0};
+
+void oled_task_user(void) {
+    uint16_t timer = timer_elapsed(oled_timer);
+    if (timer > OLED_TIMEOUT) {
+        oled_off();
+        return;
+    } else {
+        oled_on();
+    }
+    // Host Keyboard Layer Status
+    // oled_write_P(PSTR("Layer"), false);
+
+    switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            oled_write_P(is_keyboard_master() ? arrow_right : arrow_left, false);
+            break;
+        case _LOWER:
+            oled_write_P(arrow_down, false);
+            break;
+        case _RAISE:
+            oled_write_P(arrow_up, false);
+            break;
+        case _ADJUST:
+            oled_write_P(dot, false);
+            break;
+        case _MOVE:
+            oled_write_P(arrow_up_down, false);
+            break;
+        default:
+            // Or use the write_ln shortcut over adding '\n' to the end of your string
+            oled_write_ln_P(PSTR("?"), false);
+    }
+
+    render_rgbled_status();
+    // Host Keyboard LED Status
+    led_t led_state = host_keyboard_led_state();
+    oled_write_P(led_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
+    oled_write_P(led_state.caps_lock ? PSTR("CAP ") : PSTR("    "), false);
+    oled_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+    oled_write_P(PSTR("\n"), false);
+
+    if (is_keyboard_master()) {
+        char buf[10];
+        snprintf(buf, sizeof(buf), "T  %2d", (uint16_t)round((OLED_TIMEOUT - timer) / 1000));
+        oled_write(buf, false);
+    }
+}
+#endif
 
 #ifdef AUDIO_ENABLE
-
 void startup_user() {
     _delay_ms(20);  // gets rid of tick
 }
@@ -280,5 +348,4 @@ void shutdown_user() {
 void music_on_user(void) { music_scale_user(); }
 
 void music_scale_user(void) { PLAY_SONG(music_scale); }
-
 #endif

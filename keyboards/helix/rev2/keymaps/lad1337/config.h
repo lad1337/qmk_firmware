@@ -26,6 +26,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define RGB_MATRIX_KEYPRESSES
 #define DRIVER_1_LED_TOTAL 63
 #define DRIVER_LED_TOTAL DRIVER_1_LED_TOTAL
+#define OLED_TIMEOUT 30000
+#define OLED_DISABLE_TIMEOUT
 
 // Selection of RGBLIGHT MODE to use.
 #if defined(LED_ANIMATIONS)
@@ -36,6 +38,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
    #define RGBLIGHT_EFFECT_KNIGHT
    //#define RGBLIGHT_EFFECT_CHRISTMAS
    #define RGBLIGHT_EFFECT_STATIC_GRADIENT
-   //#define RGBLIGHT_EFFECT_RGB_TEST
+   #define RGBLIGHT_EFFECT_RGB_TEST
    //#define RGBLIGHT_EFFECT_ALTERNATING
 #endif
