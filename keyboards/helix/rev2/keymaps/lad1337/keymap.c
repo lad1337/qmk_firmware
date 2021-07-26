@@ -144,7 +144,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [_MOVE] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
-      _______, _______, _______, _______, _______, _______,                   KC_TAB, _______, _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______,                   KC_TAB, LSFT(KC_ENT), _______, _______, _______, _______,
       _______, _______, _______, _______, _______, _______,                   KC_MO(KC_H), KC_MO(KC_J), KC_MO(KC_K), KC_MO(KC_L), _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -266,10 +266,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 #ifdef OLED_DRIVER_ENABLE
 void keyboard_post_init_user(void) {
     wait_ms(1000);
-    if (is_keyboard_master())
-        oled_init(OLED_ROTATION_270);
-    else
-        oled_init(OLED_ROTATION_270);
+    oled_init(OLED_ROTATION_270);
 }
 void render_rgbled_status(void) {
     char buf[30];

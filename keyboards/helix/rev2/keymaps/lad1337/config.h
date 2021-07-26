@@ -22,15 +22,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 // place overrides here
 
-// If you need more program area, try select and reduce rgblight modes to use.
-#define RGB_MATRIX_KEYPRESSES
-#define DRIVER_1_LED_TOTAL 63
-#define DRIVER_LED_TOTAL DRIVER_1_LED_TOTAL
+#define RGB_DI_PIN D3
+#define DRIVER_LED_TOTAL 64
 #define OLED_TIMEOUT 30000
 #define OLED_DISABLE_TIMEOUT
 
 // Selection of RGBLIGHT MODE to use.
 #if defined(LED_ANIMATIONS)
+   #define RGB_MATRIX_KEYPRESSES
    #define RGBLIGHT_EFFECT_BREATHING
    #define RGBLIGHT_EFFECT_RAINBOW_MOOD
    #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
