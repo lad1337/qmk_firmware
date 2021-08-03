@@ -33,30 +33,32 @@ enum layer_number { _QWERTY = 0, _LOWER, _RAISE, _ADJUST, _MOVE };
 // clang-format off
 enum custom_keycodes { 
     QWERTY = SAFE_RANGE,
-    LOWER,
-    RAISE,
     ADJUST, 
-    BACKLIT, 
-    EISU, 
-    MOVE, 
     RGBRST,
-    RGBLAYER,
 };
 
 enum macro_keycodes {
     KC_SAMPLEMACRO,
 };
+// Tap Dance declarations
+enum {
+    TD_MUTE_LOCK,
+};
+
+// Tap Dance definitions
+qk_tap_dance_action_t tap_dance_actions[] = {
+    [TD_MUTE_LOCK] = ACTION_TAP_DANCE_DOUBLE(KC_MUTE, LCTL(LGUI(KC_Q))),
+};
 
 // Macros
 #define KC_MO(x) LALT(x)
 #define KC_PAPP LGUI(KC_TAB)
-#define M_SAMPLE M(KC_SAMPLEMACRO)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     /* Qwerty
      * ,-----------------------------------------.             ,-----------------------------------------.
-     * |   `  |   1  |   2  |   3  |   4  |   5  |             |   6  |   7  |   8  |   9  |   0  | Del  |
+     * |   `  |   1  |   2  |   3  |   4  |   5  |             |   6  |   7  |   8  |   9  |   0  | Lock |
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
      * | Tab  |   Q  |   W  |   E  |   R  |   T  |             |   Z  |   U  |   I  |   O  |   P  | Bksp |
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
@@ -64,16 +66,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
      * | Shift|   Z  |   X  |   C  |   V  |   B  |   [  |   ]  |   N  |   M  |   ,  |   .  |   /  |Enter |
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-     * |ctl   |adjust| Alt  | EISU  | CMD |Lower |Space |Space |Raise | MOVE | Left | Down |  Up  |Right |
+     * |ctl   |adjust| Alt  | HYPR  | CMD |Lower |Space |Space |Raise | MOVE | Left | Down |  Up  |Right |
      * `-------------------------------------------------------------------------------------------------'
      */
 
     [_QWERTY] = LAYOUT(
-        KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, KC_DEL,
+        KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, TD(TD_MUTE_LOCK),
         KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Z, KC_U, KC_I, KC_O, KC_P, KC_BSPC,
         KC_ESC, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_ENT, 
         KC_LSFT, KC_Y, KC_X, KC_C, KC_V, KC_B, KC_LBRC, KC_RBRC, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_QUOT,
-        KC_LCTL, ADJUST, KC_LALT, EISU, KC_LGUI, LOWER, KC_SPC, KC_SPC, RAISE, MOVE, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT),
+        KC_LCTL, MO(_ADJUST), KC_LALT, HYPR(KC_A), KC_LGUI, MO(_LOWER), KC_SPC, KC_SPC, MO(_RAISE), LM(_MOVE, MOD_RGUI), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT),
 
     /* Lower
      * ,-----------------------------------------.             ,-----------------------------------------.
@@ -126,14 +128,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_ADJUST] = LAYOUT(
       KC_F1, KC_F2, KC_F3, KC_F4, KC_F5, KC_F6,                  KC_F7, KC_F8, KC_F9, KC_F10, KC_F11, KC_F12,
       _______, RESET, RGBRST, _______, _______, _______, _______, _______, _______, _______, _______, KC_DEL,
-      _______, _______, _______, AU_ON, AU_OFF, AG_NORM, AG_SWAP, QWERTY, RGBLAYER, _______, _______, _______,
+      _______, _______, _______, AU_ON, AU_OFF, AG_NORM, AG_SWAP, QWERTY, _______, _______, _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, RGB_MOD, RGB_HUD, RGB_SAD, RGB_VAD),
     /* MOVE
      * ,-----------------------------------------.             ,-----------------------------------------.
      * |      |      |      |      |      |      |             |      |      |      |      |      |      |
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-     * |      |      |      |      |      |      |             |P_APP |      |      |      |      |      |
+     * |      |      |      |      |      |      |             |P_APP |      |      |      |1Pass |      |
      * |------+------+------+------+------+------|             |------+------+------+------+------+------|
      * |      |      |      |      |      |      |             |T_LEFT|T_DOWN|T_UP  |T_RIGH|      |      |
      * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
@@ -144,7 +146,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
     [_MOVE] = LAYOUT(
       _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
-      _______, _______, _______, _______, _______, _______,                   KC_TAB, LSFT(KC_ENT), _______, _______, _______, _______,
+      _______, _______, _______, _______, _______, _______,                   KC_TAB, LSFT(KC_ENT), _______, _______, KC_BSLASH, _______, 
       _______, _______, _______, _______, _______, _______,                   KC_MO(KC_H), KC_MO(KC_J), KC_MO(KC_K), KC_MO(KC_L), _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______,
       _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______
@@ -167,25 +169,16 @@ float music_scale[][2]    = SONG(MUSIC_SCALE_SOUND);
 uint16_t oled_timer;
 #endif
 
-// define variables for reactive RGB
-bool RGB_LAYER_SWITCH = false;
-int  RGB_current_mode;
-
 void persistent_default_layer_set(uint16_t default_layer) {
     eeconfig_update_default_layer(default_layer);
     default_layer_set(default_layer);
 }
+// Light LEDs 6 to 9 and 12 to 15 red when caps lock is active. Hard to ignore!
+const rgblight_segment_t PROGMEM        led_lower_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 7, HSV_RED}, {11, 2, HSV_RED}, {17, 2, HSV_RED}, {24, 8, HSV_RED});
+const rgblight_segment_t PROGMEM        led_raise_layer[] = RGBLIGHT_LAYER_SEGMENTS({0, 7, HSV_BLUE}, {11, 2, HSV_BLUE}, {17, 2, HSV_BLUE}, {24, 8, HSV_BLUE});
+const rgblight_segment_t* const PROGMEM my_rgb_layers[]   = RGBLIGHT_LAYERS_LIST(led_lower_layer, led_raise_layer);
 
-void layer_rgb(uint8_t layer) {
-    if (!RGB_LAYER_SWITCH) return;
-    if (IS_LAYER_ON(layer)) {
-        rgblight_mode_noeeprom(23);
-    } else {
-        rgblight_reload_from_eeprom();
-    }
-}
-
-bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 #ifdef OLED_DRIVER_ENABLE
     oled_timer = timer_read();
 #endif
@@ -196,77 +189,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             }
             return false;
             break;
-        case LOWER:
-            if (record->event.pressed) {
-                layer_on(_LOWER);
-                layer_rgb(_LOWER);
-            } else {
-                layer_off(_LOWER);
-                layer_rgb(_LOWER);
-            }
-            return false;
-            break;
-        case RAISE:
-            if (record->event.pressed) {
-                layer_on(_RAISE);
-                layer_rgb(_RAISE);
-            } else {
-                layer_off(_RAISE);
-                layer_rgb(_RAISE);
-            }
-            return false;
-            break;
-        case ADJUST:
-            if (record->event.pressed) {
-                layer_on(_ADJUST);
-                layer_rgb(_ADJUST);
-            } else {
-                layer_off(_ADJUST);
-                layer_rgb(_ADJUST);
-            }
-            return false;
-            break;
-            // led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
-        case RGB_MOD:
-            if (record->event.pressed) {
-                rgblight_mode(RGB_current_mode);
-                rgblight_step();
-                RGB_current_mode = rgblight_get_mode();
-            }
-            return false;
-            break;
         case RGBRST:
             if (record->event.pressed) {
                 eeconfig_update_rgblight_default();
                 rgblight_sethsv(255, 0, 3 * RGBLIGHT_VAL_STEP);
                 rgblight_enable();
-                RGB_current_mode = rgblight_get_mode();
             }
             break;
-        case MOVE:
-            if (record->event.pressed) {
-                layer_on(_MOVE);
-                layer_rgb(_MOVE);
-                SEND_STRING(SS_DOWN(X_RGUI));
-            } else {
-                layer_off(_MOVE);
-                layer_rgb(_MOVE);
-                SEND_STRING(SS_UP(X_RGUI));
-            }
-            return false;
-            break;
-        case RGBLAYER:
-            if (record->event.pressed) {
-                RGB_LAYER_SWITCH = !RGB_LAYER_SWITCH;
-            }
     }
     return true;
 }
 
 #ifdef OLED_DRIVER_ENABLE
+
 void keyboard_post_init_user(void) {
+    rgblight_layers = my_rgb_layers;
     wait_ms(1000);
     oled_init(OLED_ROTATION_270);
+}
+
+layer_state_t layer_state_set_user(layer_state_t state) {
+    if (is_keyboard_master()) rgblight_set_layer_state(0, layer_state_cmp(state, _LOWER));
+    if (!is_keyboard_master()) rgblight_set_layer_state(1, layer_state_cmp(state, _RAISE));
+    // rgblight_set_layer_state(3, layer_state_cmp(state, _ADJUST));
+    return state;
 }
 void render_rgbled_status(void) {
     char buf[30];
@@ -277,6 +223,7 @@ void render_rgbled_status(void) {
     }
     oled_write(buf, false);
 }
+
 static const char PROGMEM dot[]           = {0x07, 0};
 static const char PROGMEM arrow_right[]   = {0x10, 0};
 static const char PROGMEM arrow_left[]    = {0x11, 0};

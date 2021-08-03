@@ -12,12 +12,10 @@ LTO_ENABLE = no  # if firmware size over limit, try this option
 OLED_ENABLE = no            # OLED_ENABLE
 OLED_DRIVER_ENABLE = yes
 # LOCAL_GLCDFONT = no         # use each keymaps "helixfont.h" insted of "common/glcdfont.c"
-LED_BACK_ENABLE = no        # LED backlight (Enable WS2812 RGB underlight.)
-#RGBLIGHT_ENABLE = yes
-#RGB_MATRIX_ENABLE = yes
-#RGB_MATRIX_DRIVER = WS2812
+LED_BACK_ENABLE = yes        # LED backlight (Enable WS2812 RGB underlight.)
 LED_ANIMATIONS = yes        # LED animations
 EXTRAKEY_ENABLE = yes       
+TAP_DANCE_ENABLE = yes
 # IOS_DEVICE_ENABLE = no      # connect to IOS device (iPad,iPhone)
 
 
