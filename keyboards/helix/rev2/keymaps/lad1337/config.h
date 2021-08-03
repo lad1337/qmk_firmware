@@ -24,6 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define RGB_DI_PIN D3
 #define DRIVER_LED_TOTAL 64
+
 #define OLED_TIMEOUT 30000
 #define OLED_DISABLE_TIMEOUT
 #define RGBLIGHT_LAYERS
