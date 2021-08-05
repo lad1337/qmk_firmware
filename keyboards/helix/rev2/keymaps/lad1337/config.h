@@ -23,7 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // place overrides here
 
 #define RGB_DI_PIN D3
-#define DRIVER_LED_TOTAL 64
+#undef RGBLED_NUM
+#define RGBLED_NUM       64 // Number of LEDs
+#define DRIVER_LED_TOTAL RGBLED_NUM
+#define RGB_MATRIX_SPLIT \
+        { 32, 32 }
+#define SPLIT_TRANSPORT_MIRROR
 
 #define OLED_TIMEOUT 30000
 #define OLED_DISABLE_TIMEOUT

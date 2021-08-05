@@ -6,6 +6,7 @@
 #   See TOP/docs/config_options.md for more information.
 #
 LTO_ENABLE = yes  # if firmware size over limit, try this option
+#SPLIT_KEYBOARD = yes
 
 # Helix Spacific Build Options
 # HELIX_ROWS = 5              # Helix Rows is 4 or 5
@@ -18,7 +19,7 @@ RGBLIGHT_ENABLE = no
 RGB_MATRIX_ENABLE = yes
 RGB_MATRIX_DRIVER = WS2812
 
-#LED_ANIMATIONS = yes        # LED animations
+LED_ANIMATIONS = no        # LED animations
 EXTRAKEY_ENABLE = yes       
 TAP_DANCE_ENABLE = yes
 # IOS_DEVICE_ENABLE = no      # connect to IOS device (iPad,iPhone)
