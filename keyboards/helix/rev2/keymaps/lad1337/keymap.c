@@ -26,12 +26,13 @@
 #ifdef RGB_MATRIX_ENABLE
 #    include "rgb_matrix.c"
 #endif
+//#include "keymap_workman.h"
 
 // Each layer gets a name for readability, which is then used in the keymap matrix below.
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
-enum layer_number { _QWERTY = 0, _LOWER, _RAISE, _ADJUST, _MOVE };
+enum layer_number { _QWERTY = 0, _WORKMAN, _LOWER, _RAISE, _ADJUST, _MOVE };
 
 // clang-format off
 enum custom_keycodes { 
@@ -40,17 +41,16 @@ enum custom_keycodes {
     RGBRST,
 };
 
-enum macro_keycodes {
-    KC_SAMPLEMACRO,
-};
 // Tap Dance declarations
 enum {
     TD_MUTE_LOCK,
+    TD_LAYER,
 };
 
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     [TD_MUTE_LOCK] = ACTION_TAP_DANCE_DOUBLE(KC_MUTE, LCTL(LGUI(KC_Q))),
+    [TD_LAYER] = ACTION_TAP_DANCE_LAYER_TOGGLE(KC_GRV, _WORKMAN),
 };
 
 // Macros
@@ -74,11 +74,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */
 
     [_QWERTY] = LAYOUT(
-        KC_GRV, KC_1, KC_2, KC_3, KC_4, KC_5, KC_6, KC_7, KC_8, KC_9, KC_0, TD(TD_MUTE_LOCK),
-        KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, KC_Z, KC_U, KC_I, KC_O, KC_P, KC_BSPC,
-        KC_ESC, KC_A, KC_S, KC_D, KC_F, KC_G, KC_H, KC_J, KC_K, KC_L, KC_SCLN, KC_ENT, 
-        KC_LSFT, KC_Y, KC_X, KC_C, KC_V, KC_B, KC_LBRC, KC_RBRC, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_QUOT,
-        KC_LCTL, MO(_ADJUST), KC_LALT, HYPR(KC_A), KC_LGUI, MO(_LOWER), KC_SPC, KC_SPC, MO(_RAISE), LM(_MOVE, MOD_RGUI), KC_LEFT, KC_DOWN, KC_UP, KC_RGHT),
+        TD(TD_LAYER),   KC_1,         KC_2,     KC_3,        KC_4,     KC_5,        /*NOOP,   NOOP,     */ KC_6,     KC_7,                KC_8,     KC_9,     KC_0,     TD(TD_MUTE_LOCK),
+        KC_TAB,         KC_Q,         KC_W,     KC_E,        KC_R,     KC_T,        /*NOOP,   NOOP,     */ KC_Z,     KC_U,                KC_I,     KC_O,     KC_P,     KC_BSPC,
+        KC_ESC,         KC_A,         KC_S,     KC_D,        KC_F,     KC_G,        /*NOOP,   NOOP,     */ KC_H,     KC_J,                KC_K,     KC_L,     KC_SCLN,  KC_ENT,
+        KC_LSFT,        KC_Y,         KC_X,     KC_C,        KC_V,     KC_B,        KC_LBRC,  KC_RBRC,  KC_N,        KC_M,                KC_COMM,  KC_DOT,   KC_SLSH,  KC_QUOT,
+        KC_LCTL,        MO(_ADJUST),  KC_LALT,  HYPR(KC_A),  KC_LGUI,  MO(_LOWER),  KC_SPC,   KC_SPC,   MO(_RAISE),  LM(_MOVE,MOD_RGUI),  KC_LEFT,  KC_DOWN,  KC_UP,    KC_RGHT
+    ),
+
+    /* Workman
+     * ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐
+     * │ ` │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │ 7 │ 8 │ 9 │ 0 │ - │ = │       │
+     * ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤
+     * │     │ Q │ D │ R │ W │ B │ J │ F │ U │ P │ ; │ [ │ ] │  \  │
+     * ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤
+     * │      │ A │ S │ H │ T │ G │ Y │ N │ E │ O │ I │ ' │        │
+     * ├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤
+     * │        │ Z │ X │ M │ C │ V │ K │ L │ , │ . │ / │          │
+     * ├────┬───┴┬──┴─┬─┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤
+     * │    │    │    │                        │    │    │    │    │
+     * └────┴────┴────┴────────────────────────┴────┴────┴────┴────┘
+     */
+
+    [_WORKMAN] = LAYOUT(
+        _______,    KC_1,         KC_2,     KC_3,        KC_4,     KC_5,        /*NOOP,   NOOP,     */ KC_6,     KC_7,        KC_8,     KC_9,     KC_0,       _______,
+        _______,    KC_Q,         KC_D,     KC_R,        KC_W,     KC_B,        /*NOOP,   NOOP,     */ KC_J,     KC_F,        KC_U,     KC_P,     KC_SCLN,    _______, 
+        _______,    KC_A,         KC_S,     KC_H,        KC_T,     KC_G,        /*NOOP,   NOOP,     */ KC_Y,     KC_N,        KC_E,     KC_O,     KC_I,       _______,
+        _______,    KC_Z,         KC_X,     KC_M,        KC_C,     KC_V,        _______,  _______,  KC_K,        KC_L,        KC_COMM,  KC_DOT,   KC_SLSH,    _______,
+        _______,    _______,      _______,  _______,     _______,  _______,     _______,  _______,  _______,     _______,     _______,  _______,  _______,    _______
+    ),
 
     /* Lower
      * ,-----------------------------------------.             ,-----------------------------------------.
@@ -237,9 +260,9 @@ void render_rgbled_status(void) {
     oled_write(buf, false);
 }
 
-static const char PROGMEM dot[]           = {0x07, 0};
-static const char PROGMEM arrow_right[]   = {0x10, 0};
-static const char PROGMEM arrow_left[]    = {0x11, 0};
+static const char PROGMEM dot[] = {0x07, 0};
+// static const char PROGMEM arrow_right[]   = {0x10, 0};
+// static const char PROGMEM arrow_left[]    = {0x11, 0};
 static const char PROGMEM arrow_up[]      = {0x1E, 0};
 static const char PROGMEM arrow_down[]    = {0x1F, 0};
 static const char PROGMEM arrow_up_down[] = {0x17, 0};
@@ -257,7 +280,10 @@ void oled_task_user(void) {
 
     switch (get_highest_layer(layer_state)) {
         case _QWERTY:
-            oled_write_P(is_keyboard_master() ? arrow_right : arrow_left, false);
+            oled_write_P(PSTR("Q"), false);
+            break;
+        case _WORKMAN:
+            oled_write_P(PSTR("W"), false);
             break;
         case _LOWER:
             oled_write_P(arrow_down, false);
