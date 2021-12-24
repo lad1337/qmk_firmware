@@ -15,11 +15,8 @@
  */
 
 #include QMK_KEYBOARD_H
+#include <stdio.h>
 #include "bootloader.h"
-#ifdef PROTOCOL_LUFA
-#    include "lufa.h"
-#    include "split_util.h"
-#endif
 #ifdef AUDIO_ENABLE
 #    include "audio.h"
 #endif
@@ -191,7 +188,7 @@ float tone_plover[][2]    = SONG(PLOVER_SOUND);
 float tone_plover_gb[][2] = SONG(PLOVER_GOODBYE_SOUND);
 float music_scale[][2]    = SONG(MUSIC_SCALE_SOUND);
 #endif
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 uint16_t oled_timer;
 #endif
 
@@ -213,7 +210,7 @@ layer_state_t                           layer_state_set_user(layer_state_t state
 #endif
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
     oled_timer = timer_read();
 #endif
     switch (keycode) {
@@ -240,15 +237,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
     return true;
 }
 
-#ifdef OLED_DRIVER_ENABLE
+#ifdef OLED_ENABLE
 
 void keyboard_post_init_user(void) {
 #    ifdef RGBLIGHT_ENABLE
     rgblight_layers = my_rgb_layers;
 #    endif
     wait_ms(1000);
-    oled_init(OLED_ROTATION_270);
 }
+
+oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
 
 void render_rgbled_status(void) {
     char buf[30];
@@ -269,12 +267,14 @@ static const char PROGMEM arrow_up_down[] = {0x17, 0};
 
 void oled_task_user(void) {
     uint16_t timer = timer_elapsed(oled_timer);
+    /*
     if (timer > OLED_TIMEOUT) {
         oled_off();
         return;
     } else {
         oled_on();
     }
+    */
     // Host Keyboard Layer Status
     // oled_write_P(PSTR("Layer"), false);
 

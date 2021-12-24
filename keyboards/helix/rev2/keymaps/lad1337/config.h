@@ -30,8 +30,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         { 32, 32 }
 #define SPLIT_TRANSPORT_MIRROR
 
+#undef SSD1306OLED
+#undef OLED_DRIVER_ENABLE
 #define OLED_TIMEOUT 30000
-#define OLED_DISABLE_TIMEOUT
+#ifdef OLED_ENABLE
+#    define SPLIT_OLED_ENABLE
+#endif
+#define SPLIT_OLED_ENABLE
+
+//#define OLED_DISABLE_TIMEOUT
 #define RGBLIGHT_LAYERS
 #undef TAPPING_TERM
 #define TAPPING_TERM 300
