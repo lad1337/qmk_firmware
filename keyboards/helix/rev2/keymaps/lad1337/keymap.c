@@ -193,6 +193,7 @@ float music_scale[][2]    = SONG(MUSIC_SCALE_SOUND);
 #endif
 #ifdef OLED_DRIVER_ENABLE
 uint16_t oled_timer;
+bool     had_interaction;  // ignore the timer
 #endif
 
 void persistent_default_layer_set(uint16_t default_layer) {
@@ -214,7 +215,10 @@ layer_state_t                           layer_state_set_user(layer_state_t state
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
 #ifdef OLED_DRIVER_ENABLE
-    oled_timer = timer_read();
+    if (record->event.pressed) {
+        oled_timer      = timer_read();
+        had_interaction = true;
+    }
 #endif
     switch (keycode) {
         case QWERTY:
@@ -269,10 +273,12 @@ static const char PROGMEM arrow_up_down[] = {0x17, 0};
 
 void oled_task_user(void) {
     uint16_t timer = timer_elapsed(oled_timer);
+
     if (timer > OLED_TIMEOUT) {
+        had_interaction = false;
         oled_off();
         return;
-    } else {
+    } else if (had_interaction) {
         oled_on();
     }
     // Host Keyboard Layer Status
@@ -312,7 +318,11 @@ void oled_task_user(void) {
 
     if (is_keyboard_master()) {
         char buf[10];
-        snprintf(buf, sizeof(buf), "T  %2d", (uint16_t)round((OLED_TIMEOUT - timer) / 1000));
+        snprintf(buf, sizeof(buf), "T%s %2d", had_interaction ? "t" : "f", (uint16_t)round((OLED_TIMEOUT - timer) / 1000));
+        oled_write(buf, false);
+    } else {
+        char buf[10];
+        snprintf(buf, sizeof(buf), "T%s %2d", had_interaction ? "t" : "f", (uint16_t)round(timer / 1000));
         oled_write(buf, false);
     }
 }
