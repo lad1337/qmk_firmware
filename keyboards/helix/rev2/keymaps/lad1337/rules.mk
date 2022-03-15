@@ -6,7 +6,7 @@
 #   See TOP/docs/config_options.md for more information.
 #
 LTO_ENABLE = yes  # if firmware size over limit, try this option
-#SPLIT_KEYBOARD = yes
+SPLIT_KEYBOARD = yes
 
 # Helix Spacific Build Options
 # HELIX_ROWS = 5              # Helix Rows is 4 or 5
